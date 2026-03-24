@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AZUR — Soul In Street | Vintage Store Angers</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Bebas+Neue&family=Special+Elite&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f5ead6;
+    --dark-brown: #1a0e05;
+    --warm-brown: #3d1f0a;
+    --rust: #b5451b;
+    --gold: #c9903a;
+    --sand: #d4b483;
+    --olive: #4a4a2a;
+    --dusty-white: #f0e8d8;
+    --azur-blue: #1a3a6e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--dark-brown);
+    color: var(--dusty-white);
+    font-family: 'Special Elite', cursive;
+    overflow-x: hidden;
+  }
+
+  #bg-canvas {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    opacity: 0.18;
+    z-index: 1;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    mix-blend-mode: overlay;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 50px;
+    background: linear-gradient(180deg, rgba(26,14,5,0.97) 0%, rgba(26,14,5,0) 100%);
+    transition: background 0.4s;
+  }
+  nav.scrolled {
+    background: rgba(26,14,5,0.97);
+    border-bottom: 1px solid rgba(201,144,58,0.3);
+  }
+  .nav-logo { display: flex; flex-direction: column; line-height: 1; }
+  .nav-logo .brand {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.2rem;
+    color: var(--gold);
+    letter-spacing: 4px;
+    text-shadow: 0 0 30px rgba(201,144,58,0.4);
+  }
+  .nav-logo .tagline {
+    font-size: 0.62rem;
+    color: var(--sand);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a {
+    font-size: 0.72rem;
+    color: var(--sand);
+    text-decoration: none;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+    position: relative;
+  }
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -3px; left: 0; right: 0;
+    height: 1px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.3s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links a:hover::after { transform: scaleX(1); }
+
+  /* HERO */
+  #hero {
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    z-index: 2;
+  }
+  .hero-img-wrap { width: 100%; height: 100%; overflow: hidden; }
+  .hero-img {
+    width: 100%;
+    height: 110%;
+    object-fit: cover;
+    object-position: center top;
+    animation: heroZoom 18s ease-in-out infinite alternate;
+    filter: brightness(0.5) sepia(0.3) contrast(1.1);
+  }
+  @keyframes heroZoom {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.08); }
+  }
+  .hero-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg,rgba(26,14,5,0.15) 0%,rgba(26,14,5,0.1) 40%,rgba(26,14,5,0.75) 80%,rgba(26,14,5,0.97) 100%);
+  }
+  .hero-content {
+    position: absolute;
+    bottom: 12%; left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 90%;
+  }
+  .hero-eyebrow {
+    font-size: 0.72rem;
+    letter-spacing: 6px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    opacity: 0;
+    animation: fadeUp 1s 0.3s forwards;
+  }
+  .hero-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(5rem, 14vw, 11rem);
+    line-height: 0.9;
+    color: var(--cream);
+    letter-spacing: 8px;
+    text-shadow: 4px 4px 0px var(--rust), 0 0 80px rgba(201,144,58,0.2);
+    opacity: 0;
+    animation: fadeUp 1s 0.6s forwards;
+    margin-bottom: 8px;
+  }
+  .hero-sub {
+    font-size: 0.95rem;
+    color: var(--sand);
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeUp 1s 0.9s forwards;
+    margin-bottom: 34px;
+  }
+  .hero-cta {
+    display: inline-block;
+    padding: 14px 46px;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    font-size: 0.78rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    text-decoration: none;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.3s;
+    opacity: 0;
+    animation: fadeUp 1s 1.2s forwards;
+  }
+  .hero-cta:hover { background: var(--gold); color: var(--dark-brown); }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .scroll-indicator {
+    position: absolute;
+    bottom: 30px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column;
+    align-items: center; gap: 8px;
+    opacity: 0.5;
+    animation: bounce 2s infinite 2.5s;
+  }
+  .scroll-indicator span { font-size: 0.52rem; letter-spacing: 4px; color: var(--sand); text-transform: uppercase; }
+  .scroll-arrow { width: 18px; height: 18px; border-right: 1px solid var(--gold); border-bottom: 1px solid var(--gold); transform: rotate(45deg); }
+  @keyframes bounce {
+    0%,100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* TAPE */
+  .tape-strip {
+    width: 100%; overflow: hidden;
+    padding: 13px 0;
+    background: var(--rust);
+    position: relative; z-index: 2;
+  }
+  .tape-inner {
+    display: flex; gap: 50px;
+    animation: ticker 28s linear infinite;
+    white-space: nowrap; flex-shrink: 0;
+  }
+  .tape-inner span {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.78rem; letter-spacing: 4px;
+    color: var(--cream);
+  }
+  @keyframes ticker { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+  /* SECTIONS */
+  section { position: relative; z-index: 2; }
+  .section-label {
+    font-size: 0.62rem; letter-spacing: 5px;
+    color: var(--rust); text-transform: uppercase;
+    margin-bottom: 10px; display: block;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.8rem, 5.5vw, 4.8rem);
+    color: var(--cream); letter-spacing: 4px;
+    line-height: 1; margin-bottom: 20px;
+  }
+  .section-title em { color: var(--gold); font-style: normal; }
+
+  .divider {
+    width: 100%; text-align: center;
+    padding: 28px 0; display: flex;
+    align-items: center; justify-content: center;
+    gap: 18px; position: relative; z-index: 2;
+  }
+  .div-line {
+    flex: 1; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,144,58,0.35), transparent);
+    max-width: 180px;
+  }
+  .div-star { color: var(--gold); font-size: 1.1rem; }
+
+  /* INTRO */
+  .intro-section {
+    padding: 100px 8%;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 80px; align-items: center;
+  }
+  .intro-text p {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1rem; line-height: 1.9;
+    color: var(--sand); margin-bottom: 18px;
+  }
+  .intro-text p strong { color: var(--cream); }
+  .intro-image { position: relative; }
+  .intro-image img {
+    width: 100%; height: 520px;
+    object-fit: cover;
+    filter: sepia(0.2) contrast(1.05);
+  }
+  .intro-image::before {
+    content: '';
+    position: absolute; top: -14px; left: -14px;
+    right: 14px; bottom: 14px;
+    border: 1px solid rgba(201,144,58,0.28); z-index: -1;
+  }
+  .intro-image::after {
+    content: 'EST. 2023';
+    position: absolute; bottom: -18px; right: 18px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.82rem; letter-spacing: 5px;
+    color: var(--gold); background: var(--dark-brown);
+    padding: 5px 12px; border: 1px solid rgba(201,144,58,0.35);
+  }
+  .hours-badge {
+    margin-top: 34px; padding: 22px 26px;
+    border: 1px solid rgba(201,144,58,0.22);
+    background: rgba(201,144,58,0.04);
+    position: relative;
+  }
+  .hours-badge::before {
+    content: 'HORAIRES';
+    position: absolute; top: -10px; left: 16px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.72rem; letter-spacing: 4px;
+    color: var(--gold); background: var(--dark-brown);
+    padding: 0 10px;
+  }
+  .hours-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px 22px; }
+  .hours-row {
+    display: flex; justify-content: space-between;
+    font-size: 0.76rem; color: var(--sand);
+    letter-spacing: 1px; padding: 3px 0;
+    border-bottom: 1px solid rgba(201,144,58,0.1);
+  }
+  .hours-row .day { color: var(--cream); }
+  .hours-row .closed { color: var(--rust); opacity: 0.75; }
+
+  /* SHOP GRID */
+  .shop-section { padding: 100px 8%; }
+  .shop-header { text-align: center; margin-bottom: 60px; }
+  .shop-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 3px; }
+  .shop-item { position: relative; overflow: hidden; aspect-ratio: 3/4; }
+  .shop-item img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.7s ease, filter 0.5s;
+    filter: sepia(0.2) contrast(1.05);
+  }
+  .shop-item:hover img { transform: scale(1.06); filter: sepia(0.1) contrast(1.1); }
+  .shop-item-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(0deg, rgba(26,14,5,0.85) 0%, transparent 55%);
+    display: flex; flex-direction: column;
+    justify-content: flex-end; padding: 22px;
+    transform: translateY(15px); transition: transform 0.4s;
+  }
+  .shop-item:hover .shop-item-overlay { transform: translateY(0); }
+  .shop-item-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem; letter-spacing: 3px;
+    color: var(--cream); margin-bottom: 3px;
+  }
+  .shop-item-sub { font-size: 0.62rem; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; }
+  .shop-item.large { grid-column: span 2; aspect-ratio: 16/9; }
+
+  /* AMBIANCE */
+  .ambiance-section {
+    display: grid; grid-template-columns: 1fr 1fr;
+    min-height: 75vh;
+  }
+  .ambiance-images { display: grid; grid-template-rows: 1fr 1fr; gap: 3px; }
+  .ambiance-img-wrap { overflow: hidden; }
+  .ambiance-img-wrap img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.7s; filter: sepia(0.15) contrast(1.05);
+  }
+  .ambiance-img-wrap:hover img { transform: scale(1.04); }
+  .ambiance-text {
+    padding: 60px 65px;
+    display: flex; flex-direction: column; justify-content: center;
+    background: rgba(61,31,10,0.22);
+    border-left: 1px solid rgba(201,144,58,0.12);
+  }
+  .ambiance-text p {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.97rem; line-height: 1.95;
+    color: var(--sand); margin-bottom: 18px;
+  }
+  .ambiance-text blockquote {
+    margin: 26px 0; padding: 18px 26px;
+    border-left: 3px solid var(--gold);
+    font-family: 'Playfair Display', serif;
+    font-style: italic; font-size: 1.25rem;
+    color: var(--cream); line-height: 1.6;
+  }
+
+  /* CAPS */
+  .caps-section { padding: 100px 8%; text-align: center; }
+  .caps-showcase { display: grid; grid-template-columns: repeat(2,1fr); gap: 4px; margin-top: 56px; }
+  .cap-item { position: relative; overflow: hidden; aspect-ratio: 4/3; }
+  .cap-item img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.6s; filter: sepia(0.1) contrast(1.05);
+  }
+  .cap-item:hover img { transform: scale(1.05); }
+  .cap-overlay {
+    position: absolute; inset: 0;
+    background: rgba(26,14,5,0.55);
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.4s;
+  }
+  .cap-item:hover .cap-overlay { opacity: 1; }
+  .cap-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.9rem; letter-spacing: 5px;
+    color: var(--gold); text-align: center;
+  }
+  .caps-text {
+    max-width: 680px; margin: 46px auto 0;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.98rem; line-height: 1.9; color: var(--sand);
+  }
+
+  /* COLLABS */
+  .collabs-section { padding: 100px 8%; }
+  .collabs-header {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 60px; align-items: end; margin-bottom: 65px;
+  }
+  .collabs-header p {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.95rem; line-height: 1.9; color: var(--sand);
+  }
+  .collab-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 20px; }
+  .collab-card {
+    background: rgba(201,144,58,0.04);
+    border: 1px solid rgba(201,144,58,0.14);
+    padding: 18px; text-align: center;
+    transition: all 0.4s; overflow: hidden; position: relative;
+  }
+  .collab-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    transform: scaleX(0); transition: transform 0.4s;
+  }
+  .collab-card:hover { background: rgba(201,144,58,0.09); transform: translateY(-4px); border-color: rgba(201,144,58,0.32); }
+  .collab-card:hover::before { transform: scaleX(1); }
+  .collab-card img {
+    width: 100%; height: 110px; object-fit: contain;
+    filter: brightness(0.88) saturate(0.75); transition: filter 0.4s;
+  }
+  .collab-card:hover img { filter: brightness(1) saturate(1); }
+  .collab-card-name {
+    margin-top: 10px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.95rem; letter-spacing: 3px; color: var(--gold);
+  }
+  .collab-card-desc { font-size: 0.6rem; letter-spacing: 2px; color: var(--sand); opacity: 0.65; text-transform: uppercase; margin-top: 3px; }
+
+  /* COLLAB BANNERS */
+  .collab-banners {
+    padding: 20px 8% 60px;
+    display: grid; grid-template-columns: repeat(4,1fr);
+    gap: 14px; position: relative; z-index: 2;
+  }
+  .collab-banners img {
+    width: 100%; border-radius: 2px;
+    filter: sepia(0.08) contrast(1.08); transition: transform 0.4s;
+  }
+  .collab-banners img:hover { transform: scale(1.03); }
+
+  /* TEAM */
+  .team-section { padding: 100px 8%; text-align: center; }
+  .team-img-wrap {
+    margin: 55px auto 46px;
+    max-width: 880px; position: relative; overflow: hidden;
+  }
+  .team-img-wrap img {
+    width: 100%; height: 520px; object-fit: cover; object-position: center;
+    filter: sepia(0.15) contrast(1.05);
+  }
+  .team-img-wrap::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(0deg, rgba(26,14,5,0.6) 0%, transparent 50%);
+    z-index: 1;
+  }
+  .team-caption {
+    position: absolute; bottom: 28px; left: 0; right: 0; z-index: 2;
+    font-family: 'Playfair Display', serif;
+    font-style: italic; font-size: 1.15rem; color: var(--cream);
+  }
+  .team-text {
+    max-width: 680px; margin: 0 auto;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.98rem; line-height: 1.95; color: var(--sand);
+  }
+
+  /* CONTACT */
+  .contact-section { padding: 100px 8% 60px; }
+  .contact-header { text-align: center; margin-bottom: 60px; }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 55px; margin-bottom: 55px; }
+  .contact-info { display: flex; flex-direction: column; gap: 32px; }
+  .info-block {
+    padding: 26px;
+    border: 1px solid rgba(201,144,58,0.18);
+    position: relative;
+  }
+  .info-block-label {
+    position: absolute; top: -10px; left: 14px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.72rem; letter-spacing: 4px;
+    color: var(--gold); background: var(--dark-brown); padding: 0 10px;
+  }
+  .info-block p, .info-block a {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.93rem; color: var(--sand); line-height: 1.8; text-decoration: none;
+  }
+  .info-block a:hover { color: var(--gold); }
+  .map-wrap { position: relative; }
+  .map-wrap img {
+    width: 100%; min-height: 300px;
+    object-fit: cover;
+    filter: sepia(0.4) contrast(1.1) brightness(0.82);
+  }
+  .map-wrap::after {
+    content: 'NOUS TROUVER';
+    position: absolute; top: 18px; left: 18px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.72rem; letter-spacing: 4px;
+    color: var(--gold); background: rgba(26,14,5,0.82);
+    padding: 6px 13px; border: 1px solid rgba(201,144,58,0.28);
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid rgba(201,144,58,0.14);
+    padding: 36px 8%;
+    display: flex; justify-content: space-between; align-items: center;
+    position: relative; z-index: 2;
+  }
+  footer .foot-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.7rem; letter-spacing: 6px; color: var(--gold);
+  }
+  footer p { font-size: 0.62rem; letter-spacing: 2px; color: var(--sand); opacity: 0.55; text-transform: uppercase; }
+  footer .insta { font-size: 0.72rem; color: var(--sand); letter-spacing: 2px; }
+  footer .insta a { color: var(--gold); text-decoration: none; }
+  footer .insta a:hover { text-decoration: underline; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 14px 22px; }
+    .nav-links { gap: 18px; }
+    .intro-section, .collabs-header, .contact-grid { grid-template-columns: 1fr; }
+    .ambiance-section { grid-template-columns: 1fr; }
+    .shop-grid { grid-template-columns: 1fr 1fr; }
+    .shop-item.large { grid-column: span 2; }
+    .collab-grid { grid-template-columns: repeat(2,1fr); }
+    .caps-showcase { grid-template-columns: 1fr; }
+    .collab-banners { grid-template-columns: repeat(2,1fr); }
+    footer { flex-direction: column; gap: 16px; text-align: center; }
+  }
+  @media (max-width: 600px) {
+    .nav-links { display: none; }
+    .shop-grid { grid-template-columns: 1fr; }
+    .shop-item.large { grid-column: span 1; aspect-ratio: 4/3; }
+    .collab-grid { grid-template-columns: repeat(2,1fr); gap: 10px; }
+    .collab-banners { grid-template-columns: repeat(2,1fr); }
+    .section-title { font-size: 2.4rem; }
+    .intro-section,.shop-section,.caps-section,.collabs-section,.team-section,.contact-section { padding: 60px 5%; }
+    .ambiance-text { padding: 36px 22px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<nav id="main-nav">
+  <div class="nav-logo">
+    <span class="brand">AZUR</span>
+    <span class="tagline">Soul In Street</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#intro">La Boutique</a></li>
+    <li><a href="#shop">Le Shop</a></li>
+    <li><a href="#caps">Casquettes</a></li>
+    <li><a href="#collabs">Collabs</a></li>
+    <li><a href="#team">L'Équipe</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero" style="z-index:2;">
+  <div class="hero-img-wrap">
+    <!-- Photo page d'entrée : album RsvNjsV -->
+    <img id="img-hero" class="hero-img" src="https://i.imgur.com/RsvNjsV.jpg" alt="Azur Vintage Store">
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Angers — 6 rue Montault</p>
+    <h1 class="hero-title">AZUR</h1>
+    <p class="hero-sub">Soul In Street &nbsp;·&nbsp; Vintage Store</p>
+    <a href="#intro" class="hero-cta">Entrer dans la boutique</a>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-arrow"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- TAPE 1 -->
+<div class="tape-strip">
+  <div class="tape-inner">
+    <span>VINTAGE US</span><span>✦</span><span>VON DUTCH</span><span>✦</span>
+    <span>FRENCH LOBSTER</span><span>✦</span><span>MADE IN STONES</span><span>✦</span>
+    <span>MARQUESINA</span><span>✦</span><span>SOUL IN STREET</span><span>✦</span>
+    <span>ANGERS</span><span>✦</span><span>MORONABA</span><span>✦</span>
+    <span>VINTAGE US</span><span>✦</span><span>VON DUTCH</span><span>✦</span>
+    <span>FRENCH LOBSTER</span><span>✦</span><span>MADE IN STONES</span><span>✦</span>
+    <span>MARQUESINA</span><span>✦</span><span>SOUL IN STREET</span><span>✦</span>
+    <span>ANGERS</span><span>✦</span><span>MORONABA</span><span>✦</span>
+  </div>
+</div>
+
+<!-- INTRO -->
+<section class="intro-section" id="intro">
+  <div class="intro-text">
+    <span class="section-label">La Boutique</span>
+    <h2 class="section-title">Une <em>âme</em><br>dans la rue</h2>
+    <p>Bienvenue chez <strong>AZUR Vintage Store</strong>, la boutique angevine qui fait battre le cœur de la culture street et vintage. Nichée au <strong>6 rue Montault à Angers</strong>, Azur est bien plus qu'un magasin — c'est un lieu de vie, de rencontres et de passion authentique.</p>
+    <p>Des <strong>vêtements vintage américains</strong> aux pièces <strong>Made in Stones</strong> et <strong>Marquesina</strong>, en passant par une sélection pointue de streetwear, de casquettes collectors et d'accessoires rétro — la boutique célèbre l'esthétique des années 80, 90 et 2000 avec un regard actuel.</p>
+    <p><strong>Von Dutch France</strong> y a élu domicile, faisant d'Azur le revendeur officiel de la marque emblématique sur Angers. Une adresse incontournable pour les amateurs de pièces uniques et de culture pop.</p>
+    <div class="hours-badge">
+      <div class="hours-grid">
+        <div class="hours-row"><span class="day">Mardi</span><span>10h – 19h</span></div>
+        <div class="hours-row"><span class="day">Mercredi</span><span>10h – 19h</span></div>
+        <div class="hours-row"><span class="day">Jeudi</span><span>10h – 19h</span></div>
+        <div class="hours-row"><span class="day">Vendredi</span><span>10h – 19h</span></div>
+        <div class="hours-row"><span class="day">Samedi</span><span>10h – 19h</span></div>
+        <div class="hours-row"><span class="day closed">Dimanche</span><span class="closed">Fermé</span></div>
+        <div class="hours-row"><span class="day closed">Lundi</span><span class="closed">Fermé</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="intro-image">
+    <!-- photo_du_magasin album rOWaeEr -->
+    <img id="img-magasin1" src="https://i.imgur.com/rOWaeEr.jpg" alt="Intérieur Azur Vintage Store">
+  </div>
+</section>
+
+<!-- SHOP -->
+<section class="shop-section" id="shop">
+  <div class="shop-header">
+    <span class="section-label">L'univers</span>
+    <h2 class="section-title">Le <em>Shop</em></h2>
+  </div>
+  <div class="shop-grid">
+    <div class="shop-item large">
+      <!-- photo magasin 1 album 4rsAg2c -->
+      <img id="img-magasin2" src="https://i.imgur.com/4rsAg2c.jpg" alt="La boutique Azur">
+      <div class="shop-item-overlay">
+        <span class="shop-item-label">L'espace principal</span>
+        <span class="shop-item-sub">Vêtements vintage & streetwear</span>
+      </div>
+    </div>
+    <div class="shop-item">
+      <!-- photo magasin 5 album 6XcWiT2 -->
+      <img id="img-magasin5" src="https://i.imgur.com/6XcWiT2.jpg" alt="Von Dutch corner">
+      <div class="shop-item-overlay">
+        <span class="shop-item-label">Von Dutch Corner</span>
+        <span class="shop-item-sub">Revendeur officiel Angers</span>
+      </div>
+    </div>
+    <div class="shop-item">
+      <!-- zone retro album 5Q5rska -->
+      <img id="img-retro" src="https://i.imgur.com/5Q5rska.jpg" alt="Zone rétro">
+      <div class="shop-item-overlay">
+        <span class="shop-item-label">Zone Rétro</span>
+        <span class="shop-item-sub">PS2, Nirvana, collectors</span>
+      </div>
+    </div>
+    <div class="shop-item">
+      <!-- photo du magasin album x3N6T2d -->
+      <img id="img-magasin3" src="https://i.imgur.com/x3N6T2d.jpg" alt="Devanture Azur">
+      <div class="shop-item-overlay">
+        <span class="shop-item-label">Notre devanture</span>
+        <span class="shop-item-sub">6 rue Montault, Angers</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"><div class="div-line"></div><span class="div-star">✦</span><div class="div-line"></div></div>
+
+<!-- AMBIANCE -->
+<section class="ambiance-section" id="ambiance">
+  <div class="ambiance-images">
+    <div class="ambiance-img-wrap">
+      <!-- photo equipe album RomQ9tz -->
+      <img id="img-equipe" src="https://i.imgur.com/RomQ9tz.jpg" alt="L'équipe Azur">
+    </div>
+    <div class="ambiance-img-wrap">
+      <!-- photo du magasin intérieur album x3N6T2d -->
+      <img src="https://i.imgur.com/x3N6T2d.jpg" alt="La boutique">
+    </div>
+  </div>
+  <div class="ambiance-text">
+    <span class="section-label">L'âme du lieu</span>
+    <h2 class="section-title">Plus qu'un<br><em>magasin</em></h2>
+    <blockquote>"Un espace où la rue rencontre l'histoire, où chaque vêtement porte en lui des décennies de culture."</blockquote>
+    <p>Chez Azur, la mode vintage n'est pas un simple commerce — c'est une philosophie. Chaque semaine, la sélection évolue, de nouvelles pièces arrivent, et la communauté grandit.</p>
+    <p>Les poutres apparentes, les murs en pierre taillée d'Angers et l'atmosphère chaleureuse font d'Azur un lieu à part — un morceau de culture américaine déposé au cœur de l'Anjou.</p>
+  </div>
+</section>
+
+<!-- TAPE 2 -->
+<div class="tape-strip">
+  <div class="tape-inner">
+    <span>VINTAGE STORE</span><span>★</span><span>6 RUE MONTAULT</span><span>★</span>
+    <span>ANGERS 49000</span><span>★</span><span>@AZUR_VINTAGE_STORE</span><span>★</span>
+    <span>SOUL IN STREET</span><span>★</span><span>EST. 2023</span><span>★</span>
+    <span>VINTAGE STORE</span><span>★</span><span>6 RUE MONTAULT</span><span>★</span>
+    <span>ANGERS 49000</span><span>★</span><span>@AZUR_VINTAGE_STORE</span><span>★</span>
+    <span>SOUL IN STREET</span><span>★</span><span>EST. 2023</span><span>★</span>
+  </div>
+</div>
+
+<!-- CAPS -->
+<section class="caps-section" id="caps">
+  <span class="section-label">Notre spécialité</span>
+  <h2 class="section-title">L'art de la <em>casquette</em></h2>
+  <div class="caps-showcase">
+    <div class="cap-item">
+      <!-- casquette french lobster bleue album yj7mqjy -->
+      <img id="img-cap1" src="https://i.imgur.com/yj7mqjy.jpg" alt="French Lobster bleue">
+      <div class="cap-overlay"><div class="cap-label">French Lobster<br><small style="font-size:0.85rem;letter-spacing:2px;color:var(--sand)">Trucker Cream / Blue</small></div></div>
+    </div>
+    <div class="cap-item">
+      <!-- casquette french lobster kaki album HD9U7Vt -->
+      <img id="img-cap2" src="https://i.imgur.com/HD9U7Vt.jpg" alt="French Lobster kaki">
+      <div class="cap-overlay"><div class="cap-label">French Lobster<br><small style="font-size:0.85rem;letter-spacing:2px;color:var(--sand)">Trucker Olive</small></div></div>
+    </div>
+    <div class="cap-item">
+      <!-- casquette von dutch album XrCfxxR -->
+      <img id="img-cap3" src="https://i.imgur.com/XrCfxxR.jpg" alt="Von Dutch caps">
+      <div class="cap-overlay"><div class="cap-label">Von Dutch<br><small style="font-size:0.85rem;letter-spacing:2px;color:var(--sand)">Collection complète</small></div></div>
+    </div>
+    <div class="cap-item">
+      <!-- moronaba collab album LtrIVz0 -->
+      <img id="img-moro" src="https://i.imgur.com/LtrIVz0.jpg" alt="Moronaba collab cap">
+      <div class="cap-overlay"><div class="cap-label">Moronaba<br><small style="font-size:0.85rem;letter-spacing:2px;color:var(--sand)">Collab exclusive</small></div></div>
+    </div>
+  </div>
+  <p class="caps-text">Des <strong style="color:var(--cream)">Von Dutch</strong> iconiques aux trucker caps <strong style="color:var(--cream)">French Lobster</strong> brodés à la main, en passant par les New Era collectors et les pièces exclusives <strong style="color:var(--cream)">Moronaba</strong> — la sélection de casquettes d'Azur est sans équivalent à Angers.</p>
+</section>
+
+<!-- COLLABS -->
+<section class="collabs-section" id="collabs">
+  <div class="collabs-header">
+    <div>
+      <span class="section-label">Partenariats & Marques</span>
+      <h2 class="section-title">Nos <em>Collabs</em></h2>
+    </div>
+    <p>Azur tisse des liens forts avec des créateurs locaux, des bars angevins, des labels musicaux et des marques de mode — pour créer ensemble des événements et des collections uniques qui marquent les esprits de toute la scène angevine.</p>
+  </div>
+  <div class="collab-grid">
+    <div class="collab-card">
+      <!-- collab album COiSnc6 -->
+      <img src="https://i.imgur.com/COiSnc6.jpg" alt="Von Dutch">
+      <div class="collab-card-name">Von Dutch France</div>
+      <div class="collab-card-desc">Revendeur officiel</div>
+    </div>
+    <div class="collab-card">
+      <!-- collab 1 album YujgGwY -->
+      <img src="https://i.imgur.com/YujgGwY.jpg" alt="French Lobster">
+      <div class="collab-card-name">French Lobster</div>
+      <div class="collab-card-desc">Casquettes brodées</div>
+    </div>
+    <div class="collab-card">
+      <!-- collab 2 album EJj2dA9 -->
+      <img src="https://i.imgur.com/EJj2dA9.jpg" alt="Collab 2">
+      <div class="collab-card-name">Made In Stones</div>
+      <div class="collab-card-desc">Streetwear angevin</div>
+    </div>
+    <div class="collab-card">
+      <!-- collab 3 — using photo_collab album PC1y8Eg -->
+      <img src="https://i.imgur.com/PC1y8Eg.jpg" alt="Collab 3">
+      <div class="collab-card-name">Marquesina</div>
+      <div class="collab-card-desc">Mode & accessoires</div>
+    </div>
+    <div class="collab-card">
+      <!-- collab 4 album mhvvStj -->
+      <img src="https://i.imgur.com/mhvvStj.jpg" alt="Moronaba">
+      <div class="collab-card-name">Moronaba</div>
+      <div class="collab-card-desc">Collaboration exclusive</div>
+    </div>
+    <div class="collab-card">
+      <!-- photo collab 2 album 0vUqhHx -->
+      <img src="https://i.imgur.com/0vUqhHx.jpg" alt="24KLTR">
+      <div class="collab-card-name">24KLTR</div>
+      <div class="collab-card-desc">Label — Est. 2023</div>
+    </div>
+    <div class="collab-card">
+      <!-- photo collab album PC1y8Eg -->
+      <img src="https://i.imgur.com/PC1y8Eg.jpg" alt="Carmine">
+      <div class="collab-card-name">Carmine</div>
+      <div class="collab-card-desc">Boire, rire & manger</div>
+    </div>
+    <div class="collab-card">
+      <!-- logo album HiYqe46 -->
+      <img src="https://i.imgur.com/HiYqe46.jpg" alt="PMP Bar">
+      <div class="collab-card-name">PMP Bar · Angers</div>
+      <div class="collab-card-desc">Culture & musique live</div>
+    </div>
+  </div>
+</section>
+
+<!-- COLLAB BANNERS -->
+<div class="collab-banners">
+  <img src="https://i.imgur.com/PC1y8Eg.jpg" alt="Azur x Carmine">
+  <img src="https://i.imgur.com/0vUqhHx.jpg" alt="Azur x 24KLTR">
+  <img src="https://i.imgur.com/mhvvStj.jpg" alt="Collab 4">
+  <img src="https://i.imgur.com/COiSnc6.jpg" alt="Collab">
+</div>
+
+<!-- TEAM -->
+<section class="team-section" id="team">
+  <span class="section-label">Derrière la boutique</span>
+  <h2 class="section-title">L'<em>Équipe</em></h2>
+  <div class="team-img-wrap">
+    <img src="https://i.imgur.com/RomQ9tz.jpg" alt="L'équipe Azur">
+    <p class="team-caption">L'équipe Azur — Angers, 2024</p>
+  </div>
+  <p class="team-text">Azur Vintage Store, c'est avant tout une aventure humaine. Une équipe passionnée, ancrée dans la culture angevine, qui croit que la mode vintage a le pouvoir de rassembler, de raconter des histoires et de créer des liens durables entre les générations. Chaque jour d'ouverture est une invitation à la découverte.</p>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <div class="contact-header">
+    <span class="section-label">Venir nous voir</span>
+    <h2 class="section-title">Nous <em>Trouver</em></h2>
+  </div>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <div class="info-block">
+        <span class="info-block-label">Adresse</span>
+        <p>6 rue Montault<br>49000 Angers<br>France</p>
+      </div>
+      <div class="info-block">
+        <span class="info-block-label">Horaires d'ouverture</span>
+        <p>
+          Mardi au Samedi : <strong style="color:var(--gold)">10h – 19h</strong><br>
+          Dimanche : <span style="color:var(--rust)">Fermé</span><br>
+          Lundi : <span style="color:var(--rust)">Fermé</span>
+        </p>
+      </div>
+      <div class="info-block">
+        <span class="info-block-label">Instagram</span>
+        <p><a href="https://instagram.com/azur_vintage_store" target="_blank">@azur_vintage_store</a></p>
+      </div>
+    </div>
+    <div class="map-wrap">
+      <!-- localisation album YJA2UCc -->
+      <img id="img-map" src="https://i.imgur.com/YJA2UCc.jpg" alt="Localisation Azur Vintage Store Angers">
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-logo">AZUR</div>
+  <p>© 2024 Azur Vintage Store — 6 rue Montault, Angers</p>
+  <div class="insta">Instagram : <a href="https://instagram.com/azur_vintage_store" target="_blank">@azur_vintage_store</a></div>
+</footer>
+
+<script>
+/* ---- BACKGROUND ANIMATION ---- */
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resize();
+window.addEventListener('resize', resize);
+
+const particles = [];
+for (let i = 0; i < 65; i++) {
+  particles.push({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight,
+    r: Math.random() * 1.6 + 0.3,
+    vx: (Math.random() - 0.5) * 0.28,
+    vy: -Math.random() * 0.35 - 0.08,
+    opacity: Math.random() * 0.28 + 0.05,
+    color: Math.random() > 0.5 ? '201,144,58' : '212,180,131'
+  });
+}
+const orbs = [
+  { x: 0.2, y: 0.3, r: 0.35, color: '61,31,10', speed: 0.00014 },
+  { x: 0.8, y: 0.7, r: 0.4,  color: '74,74,42', speed: 0.0001  },
+  { x: 0.5, y: 0.5, r: 0.3,  color: '26,58,110',speed: 0.00011 },
+];
+let time = 0;
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  time++;
+  orbs.forEach((orb, i) => {
+    const cx = (orb.x + Math.sin(time * orb.speed + i) * 0.14) * canvas.width;
+    const cy = (orb.y + Math.cos(time * orb.speed * 0.7 + i) * 0.11) * canvas.height;
+    const rad = orb.r * Math.max(canvas.width, canvas.height);
+    const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
+    g.addColorStop(0, `rgba(${orb.color},0.11)`);
+    g.addColorStop(1, `rgba(${orb.color},0)`);
+    ctx.fillStyle = g;
+    ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.fill();
+  });
+  particles.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.y < -5) { p.y = canvas.height + 5; p.x = Math.random() * canvas.width; }
+    if (p.x < 0) p.x = canvas.width;
+    if (p.x > canvas.width) p.x = 0;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${p.color},${p.opacity})`; ctx.fill();
+  });
+  requestAnimationFrame(draw);
+}
+draw();
+
+/* ---- NAV SCROLL ---- */
+const nav = document.getElementById('main-nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* ---- IMGUR : si l'ID d'album ne charge pas, on tente le lien direct avec l'ID ---- */
+// Les URLs Imgur de type album /a/XXXXX redirigent vers une image.
+// On ajoute un fallback : si l'image ne charge pas, on essaie i.imgur.com/XXXXX.jpg
+document.querySelectorAll('img[src*="imgur"]').forEach(img => {
+  img.onerror = function() {
+    // Extrait l'ID depuis l'URL actuelle et tente différentes extensions
+    const src = this.src;
+    const id = src.split('/').pop().split('.')[0];
+    if (!this.dataset.tried) {
+      this.dataset.tried = '1';
+      // Tente .jpeg
+      this.src = `https://i.imgur.com/${id}.jpeg`;
+    } else if (this.dataset.tried === '1') {
+      this.dataset.tried = '2';
+      // Tente .png
+      this.src = `https://i.imgur.com/${id}.png`;
+    }
+  };
+});
+</script>
+</body>
+</html>
